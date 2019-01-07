@@ -1,4 +1,6 @@
 const registerForm = document.querySelector("#signup-form");
+let registerModal;
+setReferences();
 bindEvents();
 
 async function registerUser(e) {
@@ -13,9 +15,18 @@ async function registerUser(e) {
     email,
     password
   );
-  console.log(credentials);
-};
+  // Get the user from the received credentials
+  const { user } = credentials;
+  //Clear the form
+  registerForm.reset();
+  //Close the Modal
+   M.Modal.getInstance(registerModal).close();
+}
 
 function bindEvents() {
   registerForm.addEventListener("submit", registerUser);
+}
+
+function setReferences() {
+  registerModal = document.querySelector("#modal-signup");
 }
