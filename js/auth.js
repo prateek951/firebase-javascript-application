@@ -1,3 +1,18 @@
+//get the data
+db.collection('guides')
+  .get()
+    .then(snapshot => setGuides(snapshot.docs));
+
+//Listen for Auth Status Changes
+auth.onAuthStateChanged(user => {
+  console.log(`Status of user`);
+  if (user) {
+    console.log("user logged in" + user);
+  } else {
+    console.log("user logged out");
+  }
+});
+
 const registerForm = document.querySelector("#signup-form");
 const loginForm = document.querySelector("#login-form");
 let registerModal;
@@ -37,15 +52,15 @@ async function registerUser(e) {
 async function loginUser(e) {
   e.preventDefault();
   //Tap credentials
-  const email = loginForm['login-email'].value;
-  const password = loginForm['login-password'].value; 
+  const email = loginForm["login-email"].value;
+  const password = loginForm["login-password"].value;
 
   //Reach out to firebase
-  const credentials = await auth.signInWithEmailAndPassword(email,password);
+  const credentials = await auth.signInWithEmailAndPassword(email, password);
   console.log(credentials);
   //Reset the login form
   loginForm.reset();
-  //Close the modal 
+  //Close the modal
   M.Modal.getInstance(loginModal).close();
 }
 
@@ -67,7 +82,6 @@ function bindEvents() {
 //Set the references
 function setReferences() {
   registerModal = document.querySelector("#modal-signup");
-  loginModal = document.querySelector('#modal-login');
+  loginModal = document.querySelector("#modal-login");
   logout = document.querySelector("#logout");
-
 }
