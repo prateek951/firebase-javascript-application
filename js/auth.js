@@ -1,15 +1,17 @@
-//get the data
-db.collection('guides')
-  .get()
-    .then(snapshot => setGuides(snapshot.docs));
-
 //Listen for Auth Status Changes
 auth.onAuthStateChanged(user => {
-  console.log(`Status of user`);
+  console.log(`Status of user` + user);
   if (user) {
-    console.log("user logged in" + user);
+    //get the data only if the user is logged in.
+    //pull out the docs from the snapshot
+    db.collection("guides")
+      .get()
+      .then(({ docs }) => {
+        setGuides(docs);
+      });
   } else {
-    console.log("user logged out");
+    //In case the user does not exists, auth does not exist then no call
+    setGuides([]);
   }
 });
 
