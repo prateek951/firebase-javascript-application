@@ -45,12 +45,29 @@ function setRefs() {
   accountDetails = document.querySelector(".account-details");
 }
 
-function setUserInterface(user) {
+async function setUserInterface(user) {
   if (user) {
     //account details
+    const userExtras = await db
+      .collection("users")
+      .doc(user.uid)
+      .get();
+    //getting the extra information and setup the ui 
+    // console.log(userExtras.data().mobno);
     let html = `
-      <h4>Logged in as ${user.email}</h4>
-    `;
+          <h4>User Information</h4>
+          <br>
+          <h6>Logged in as ${user.email}</h6>
+          <h6>First name :  ${userExtras.data().fname}</h6>
+          <h6>Last name : ${userExtras.data().lname}</h6>
+          <h6>Short Description: ${userExtras.data().des} </h6>
+          <h6>Address : ${userExtras.data().address}</h6>
+          <h6>Contact Number : ${userExtras.data().mobno}</h6>
+          <h6>Pincode : ${userExtras.data().pincode}</h6>
+          <h6>City : ${userExtras.data().city}</h6>
+          <h6>State : ${userExtras.data().state}</h6>
+          <h6>Country : ${userExtras.data().country}</h6>
+          `;
     accountDetails.innerHTML = html;
     loggedInLinks.forEach(link => (link.style.display = "block"));
     loggedOutLinks.forEach(link => (link.style.display = "none"));
@@ -63,5 +80,4 @@ function setUserInterface(user) {
 }
 
 //Any binding of events will go here
-function bindEvents() {
-}
+function bindEvents() {}
