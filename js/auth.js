@@ -6,9 +6,12 @@ auth.onAuthStateChanged(user => {
     setUserInterface(user);
     //get the data only if the user is logged in.
     //pull out the docs from the snapshot
-    db.collection("guides").onSnapshot(({ docs }) => {
-      setGuides(docs);
-    }).catch(ex => console.log(ex.message));
+    db.collection("guides").onSnapshot(
+      ({ docs }) => {
+        setGuides(docs);
+      },
+      ex => console.log(ex.message)
+    );
   } else {
     //setup the user interface for the navbar show only the logged out links
     setUserInterface(null);
@@ -21,7 +24,7 @@ auth.onAuthStateChanged(user => {
 const registerForm = document.querySelector("#signup-form");
 const loginForm = document.querySelector("#login-form");
 const createForm = document.querySelector("#create-form");
-/** 
+/**
  * modal references
  * */
 let registerModal;
@@ -39,9 +42,21 @@ async function registerUser(e) {
   e.preventDefault();
   try {
     // console.log("submit event");
-    // Tap the credentials
+    // Tap the credentials (authentication credentials goes to firestore)
     const email = registerForm["signup-email"].value;
     const password = registerForm["signup-password"].value;
+    // (extra information will go with the document linked to this uid in the users collection)
+    //Keep these below fields in separate doc that is linked with the uid to get those extra information
+    const description = registerForm["signup-des"].value;
+    const firstname = registerForm["signup-fname"].value;
+    const lastname = registerForm["signup-lname"].value;
+    const address = registerForm["signup-address"].value;
+    const mobno = registerForm["signup-mobile"].value;
+    const pincode = registerForm["signup-pincode"].value;
+    const city = registerForm["signup-city"].value;
+    const state = registerForm["signup-state"].value;
+    const country = registerForm["signup-country"].value;
+
     // console.log(email, password);
     //register the user
     const credentials = await auth.createUserWithEmailAndPassword(
@@ -51,6 +66,23 @@ async function registerUser(e) {
     // Get the user from the received credentials
     const { user } = credentials;
     console.log(user);
+    //Reach out to firestore collection and add extra information
+    // about the user inside that.
+    //connect extra information to the record in guids collection
+    await db
+      .collection("users")
+      .doc(user.uid)
+      .set({
+        des: description,
+        fname: firstname,
+        lname: lastname,
+        address: address,
+        mobno: mobno,
+        pincode: pincode,
+        city : city,
+        state : state,
+        country : country
+      });
     //Clear the form
     registerForm.reset();
     //Close the Modal
