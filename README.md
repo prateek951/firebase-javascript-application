@@ -1,5 +1,14 @@
 # firebase-javascript-application
-A full application for practicing using Firebase and Vanilla Javascript 
+A full application using Firebase and Vanilla Javascript 
+
+# Techstack 
+```
+Firebase 
+Firestore 
+HTML5
+Javascript 
+MaterializeCSS for awesome designs !
+```
 
 # Latest ES6 Standards  
 ```
@@ -8,4 +17,5 @@ A full application for practicing using Firebase and Vanilla Javascript
 3.Modular Code 
 4.Shows Account Information for each registered acccount 
 5.Uses Firestore listeners for real time updates. 
+6.Roles- Admin (Super User) and Normal User     
 ```
