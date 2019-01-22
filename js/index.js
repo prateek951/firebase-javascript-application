@@ -6,6 +6,7 @@ let loggedInLinks;
 //links that are shown only to unauthenticated users
 let loggedOutLinks;
 let accountDetails;
+let adminItems;
 setRefs();
 
 const setGuides = docs => {
@@ -43,16 +44,23 @@ function setRefs() {
   loggedInLinks = document.querySelectorAll(".logged-in");
   loggedOutLinks = document.querySelectorAll(".logged-out");
   accountDetails = document.querySelector(".account-details");
+  adminItems = document.querySelectorAll(".admin");
 }
 
 async function setUserInterface(user) {
   if (user) {
+    if (user.admin) {
+      adminItems.forEach(item => {
+        item.style.display = "block";
+      });
+    }
+
     //account details
     const userExtras = await db
       .collection("users")
       .doc(user.uid)
       .get();
-    //getting the extra information and setup the ui 
+    //getting the extra information and setup the ui
     // console.log(userExtras.data().mobno);
     let html = `
           <h4>User Information</h4>
@@ -67,6 +75,7 @@ async function setUserInterface(user) {
           <h6>City : ${userExtras.data().city}</h6>
           <h6>State : ${userExtras.data().state}</h6>
           <h6>Country : ${userExtras.data().country}</h6>
+          <div class="green-text"> ${user.admin ? 'Admin' : 'Member'}</div>
           `;
     accountDetails.innerHTML = html;
     loggedInLinks.forEach(link => (link.style.display = "block"));
@@ -76,6 +85,7 @@ async function setUserInterface(user) {
     accountDetails.innerHTML = "";
     loggedInLinks.forEach(link => (link.style.display = "none"));
     loggedOutLinks.forEach(link => (link.style.display = "block"));
+    adminItems.forEach(item => (item.style.display = "none"));
   }
 }
 

@@ -1,9 +1,14 @@
+// add admin cloud function
+
 //Listen for Auth Status Changes
 auth.onAuthStateChanged(user => {
   console.log(`Status of user` + user);
   if (user) {
+    user.getIdTokenResult().then(idTokenResult => {
+      user.admin = idTokenResult.claims.admin;
+      setUserInterface(user);
+    });
     // setup the user interface for the navbar show only the logged in links
-    setUserInterface(user);
     //get the data only if the user is logged in.
     //pull out the docs from the snapshot
     db.collection("guides").onSnapshot(
@@ -24,6 +29,7 @@ auth.onAuthStateChanged(user => {
 const registerForm = document.querySelector("#signup-form");
 const loginForm = document.querySelector("#login-form");
 const createForm = document.querySelector("#create-form");
+const adminForm = document.querySelector(".admin-actions");
 /**
  * modal references
  * */
@@ -32,6 +38,7 @@ let accountModal;
 let loginModal;
 let guideModal;
 let logout;
+let adminEmail;
 setReferences();
 bindEvents();
 /**
@@ -79,9 +86,9 @@ async function registerUser(e) {
         address: address,
         mobno: mobno,
         pincode: pincode,
-        city : city,
-        state : state,
-        country : country
+        city: city,
+        state: state,
+        country: country
       });
     //Clear the form
     registerForm.reset();
@@ -129,6 +136,23 @@ async function logoutUser(e) {
   }
 }
 /**
+ * Code to make user an admin
+ *
+ */
+async function makeAdmin(e) {
+  e.preventDefault();
+  try {
+    const assignRoleEqualsToAdmin = functions.httpsCallable(
+      "assignRoleEqualsToAdmin"
+    );
+    const result = await assignRoleEqualsToAdmin({ email: adminEmail });
+    console.log(result);
+  } catch (error) {
+    console.log("an error occurred", error);
+  }
+}
+
+/**
  * Code to create a new guide
  */
 async function makeGuide(e) {
@@ -154,9 +178,11 @@ function bindEvents() {
   loginForm.addEventListener("submit", loginUser);
   logout.addEventListener("click", logoutUser);
   createForm.addEventListener("submit", makeGuide);
+  adminForm.addEventListener("submit", makeAdmin);
 }
 //Set the references
 function setReferences() {
+  adminEmail = document.querySelector("#admin-email");
   registerModal = document.querySelector("#modal-signup");
   loginModal = document.querySelector("#modal-login");
   guideModal = document.querySelector("#modal-create");
