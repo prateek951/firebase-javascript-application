@@ -21,7 +21,7 @@ auth.onAuthStateChanged(user => {
     //setup the user interface for the navbar show only the logged out links
     setUserInterface(null);
     //In case the user does not exists, auth does not exist then no call
-    setGuides([]);
+    setGuides([], null);
   }
 });
 
@@ -92,10 +92,12 @@ async function registerUser(e) {
       });
     //Clear the form
     registerForm.reset();
+    registerForm.querySelector(".error").innerHTML = "";
     //Close the Modal
     M.Modal.getInstance(registerModal).close();
   } catch (ex) {
-    console.log("an error occurred", ex);
+    // console.log("an error occurred", ex);
+    registerForm.querySelector(".error").innerHTML = ex.message;
   }
 }
 
@@ -115,10 +117,12 @@ async function loginUser(e) {
     console.log(credentials);
     //Reset the login form
     loginForm.reset();
+    loginForm.querySelector(".error").innerHTML = "";
     //Close the modal
     M.Modal.getInstance(loginModal).close();
   } catch (ex) {
     console.log(ex);
+    loginForm.querySelector(".error").innerHTML = ex.message;
   }
 }
 
@@ -142,10 +146,8 @@ async function logoutUser(e) {
 async function makeAdmin(e) {
   e.preventDefault();
   try {
-    const assignRoleEqualsToAdmin = functions.httpsCallable(
-      "assignRoleEqualsToAdmin"
-    );
-    const result = await assignRoleEqualsToAdmin({ email: adminEmail });
+    const addAdminRole = functions.httpsCallable("addAdminRole");
+    const result = await addAdminRole({ email: adminEmail.value });
     console.log(result);
   } catch (error) {
     console.log("an error occurred", error);

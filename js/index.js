@@ -10,8 +10,8 @@ let adminItems;
 setRefs();
 
 const setGuides = docs => {
-  let output = "";
-  if (docs && docs.length) {
+  if (docs.length) {
+    let output = "";
     docs.forEach(doc => {
       // console.log(doc.data());
       const { title, content } = doc.data();
@@ -25,10 +25,10 @@ const setGuides = docs => {
     `;
       output += li;
     });
+    guides.innerHTML = output;
   } else {
-    output += `<h5 class="center-align">Login to view guides</h5>`;
+    guides.innerHTML = `<h5 class="center-align">Login to view guides</h5>`;
   }
-  guides.innerHTML = output;
 };
 
 //init configuration

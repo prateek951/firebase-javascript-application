@@ -8,8 +8,15 @@ admin.initializeApp();
 //  response.send("Hello from Firebase!");
 // });
 
-exports.assignRoleEqualsToAdmin = functions.https.onCall((data, context) => {
+exports.addAdminRole = functions.https.onCall((data, context) => {
   // get the user and assign the custom claim (admin)
+
+  //check if request is made by an admin
+  if (context.auth.token.admin !== true) {
+    return  {
+      error : 'Only admins can add other admins'
+    }
+  }
   return admin
     .auth()
     .getUserByEmail(data.email)
